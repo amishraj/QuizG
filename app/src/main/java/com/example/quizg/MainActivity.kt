@@ -59,19 +59,20 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Please select user type", Toast.LENGTH_SHORT).show();
         }
         else{
-            val intent  = Intent(this, QuizQuestionsActivity::class.java)
-
-            intent.putExtra(Constants.USER_NAME, username.text.toString())
-
             val username = username.text.toString()
             val password = password.text.toString()
             val userType : String
+            val intent : Intent
             if(radioButton.text=="Student"){
                 userType="Student"
+                intent  = Intent(this, StudentDashboard::class.java)
             }
             else{
                 userType="Professor"
+                //TODO : Below intent should go to Professor/Admin Dashboard
+                intent  = Intent(this, QuizQuestionsActivity::class.java)
             }
+            intent.putExtra(Constants.USER_NAME, username)
 
             reference = FirebaseDatabase.getInstance().getReference("Users")
             //val User = Users(username)
