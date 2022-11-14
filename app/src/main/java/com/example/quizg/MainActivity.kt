@@ -61,6 +61,9 @@ class MainActivity : AppCompatActivity() {
         }
         else{
             val intent  = Intent(this, QuizQuestionsActivity::class.java)
+
+            intent.putExtra(Constants.USER_NAME, username.text.toString())
+
             val username = username.text.toString()
             val password = password.text.toString()
             val userType : String
