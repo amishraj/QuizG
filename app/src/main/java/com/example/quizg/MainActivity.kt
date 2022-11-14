@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         signup.setOnClickListener {
             val intent = Intent(this, SignUp::class.java)
             startActivity(intent)
-            finish()
         }
         radioGroup = findViewById(R.id.groupradio);
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
