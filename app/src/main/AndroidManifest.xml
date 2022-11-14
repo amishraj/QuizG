@@ -13,10 +13,18 @@
         android:theme="@style/Theme.QuizG"
         tools:targetApi="31">
         <activity
-            android:name=".QuizQuestionsActivity"
+            android:name=".ResultActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            >
+            android:theme="@style/NoActionBarTheme">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".QuizQuestionsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
