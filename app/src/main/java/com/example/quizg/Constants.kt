@@ -1,41 +1,112 @@
 package com.example.quizg
 
+import android.util.Log
+import android.widget.Toast
+
 object Constants{
 
     const val USER_NAME:String="user_name"
     const val TOTAL_QUESTIONS:String="total_question"
     const val CORRECT_ANSWERS:String= "correct_answers"
+    const val NAME_OF_USER:String="name_of_user"
+    const val CURRENT_QUIZ_TITLE:String="current_quiz_title"
 
-    fun getQuestions():ArrayList<Question>{
-        val questionsList= ArrayList<Question>()
-        val options= ArrayList<Option>()
+    private val listOfQuizzes:ArrayList<Quiz>?= arrayListOf()
+
+    fun getQuestions(quizTitle :String): ArrayList<Question>? { //TODO: Should take parameters quiz and returns questionsList
+        for(quiz in listOfQuizzes!!){
+            if(quiz.title== quizTitle){
+                return quiz.questions
+            }
+        }
+
+        return null
+    }
+
+    fun getQuizzes(courseName:String): ArrayList<Quiz> {
+        //TODO: dummy data here, to be replaced by database fetched quizzes
+        listOfQuizzes?.clear()
+
+        val questionsList1= ArrayList<Question>()
+        val questionsList2= ArrayList<Question>()
+
+        val options1= ArrayList<Option>()
         val options2= ArrayList<Option>()
+        val options3= ArrayList<Option>()
+        val options4= ArrayList<Option>()
+        val options5= ArrayList<Option>()
 
-        val option= Option(1, "India")
-        val option2= Option(2, "USA")
-        val option3= Option(3,"South Africa")
-        val option4= Option(4, "Australia")
+        val option1= Option(1, "New Delhi")
+        val option2= Option(2, "Jaipur")
+        val option3= Option(3,"Bangalore")
+        val option4= Option(4, "Kolkata")
+        options1.add(option1); options1.add(option2); options1.add(option3); options1.add(option4)
 
-        val option5= Option(1, "Tim Cook")
-        val option6= Option(2, "Satya Nadela")
-        val option7= Option(3,"Bill Gates")
-        val option8= Option(4, "Mark Zuckerberg")
+        val option5= Option(5, "120")
+        val option6= Option(6, "360")
+        val option7= Option(7,"365")
+        val option8= Option(8, "365.25")
+        options2.add(option5); options2.add(option6); options2.add(option7); options2.add(option8)
 
-        options.add(option)
-        options.add(option2)
-        options.add(option3)
-        options.add(option4)
+        val option9= Option(9, "Samsung")
+        val option10= Option(10, "Sony")
+        val option11= Option(11,"Nokia")
+        options3.add(option9); options3.add(option10); options3.add(option11)
 
-        options2.add(option5)
-        options2.add(option6)
-        options2.add(option7)
-        options2.add(option8)
+        val option12= Option(12, "China")
+        val option13= Option(13, "Turkey")
+        val option14= Option(14, "Greece")
+        val option15= Option(15, "India")
+        val option16= Option(16, "Nepal")
+        options4.add(option12); options4.add(option13); options4.add(option14); options4.add(option15); options4.add(option16)
 
-        val que1:Question= Question(1, "What country does this flag belong to?", options, option3)
-        val que2:Question= Question(2, "Who is the CEO of Apple?", options2, option5)
+        val option17= Option(17, "Greek")
+        val option18= Option(18, "Russian")
+        val option19= Option(19, "Arabic")
+        val option20= Option(20, "Spanish")
+        options5.add(option17); options5.add(option18); options5.add(option19); options5.add(option20)
 
-        questionsList.add(que1)
-        questionsList.add(que2)
-        return questionsList
+        val que1= Question(1, "What is the capital of India?", options1, option1)
+        val que2= Question(2, "How many days are there in a year?", options2, option8)
+        val que3= Question(3, "What company makes the Xperia model of smartphone?", options3, option10)
+        val que4= Question(4, "Where was the first example of paper money used?", options4, option12)
+        val que5= Question(5, "Which of the following languages has the longest alphabet?", options5, option18)
+
+        questionsList1.add(que1);  questionsList1.add(que2);  questionsList1.add(que3)
+        questionsList2.add(que4); questionsList2.add(que5)
+
+        val quiz1= Quiz(1, "Graphs and Trees", questionsList1, "CSCI6212", "Design and Analysis of Algorithms", 3)
+        val quiz2= Quiz(2, "Kotlin and its Benefits", questionsList2, "CSCI6221", "Advanced Software Paradigms", 3)
+        val quiz3= Quiz(3, "Scrum and Agile", questionsList1, "CSCI6221", "Advanced Software Paradigms", 3)
+        val quiz4= Quiz(4, "Cache Registers", questionsList2, "CSCI6461", "Computer Architectures", 3)
+
+        listOfQuizzes?.add(quiz1); listOfQuizzes?.add(quiz2); listOfQuizzes?.add(quiz3); listOfQuizzes?.add(quiz4)
+
+        //code starts here
+        val tempQuizList= ArrayList<Quiz>()
+        tempQuizList.clear()
+        for(quiz in listOfQuizzes!!){
+            if(quiz.courseName== courseName){
+                tempQuizList.add(quiz)
+            }
+        }
+
+        return tempQuizList
+
+    }
+
+    fun getAllCourses(): Array<String> {
+        var courseList= arrayOf<String>()
+        var quizList= getQuizzes("Design and Analysis of Algorithms")
+
+        if (listOfQuizzes != null) {
+            for(quiz in listOfQuizzes){
+                if(!courseList.contains(quiz.courseName)){
+                    courseList+= quiz.courseName
+                }
+            }
+            return courseList
+        }
+        return courseList
     }
 }

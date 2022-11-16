@@ -2,7 +2,6 @@ package com.example.quizg
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.material.textfield.TextInputEditText
+import org.w3c.dom.Text
 
 class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
 
@@ -26,14 +25,17 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
     private var correctStatus:Boolean=false
     private var submittedStatus: Boolean=false
 
+    private var generatedOptionID:Int=1
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
 
         mUsername= intent.getStringExtra(Constants.USER_NAME)
+        var currentQuizTitle= intent.getStringExtra(Constants.CURRENT_QUIZ_TITLE)
 
-        mQuestionsList= Constants.getQuestions()
+        mQuestionsList= Constants.getQuestions(currentQuizTitle.toString())
         setQuestion()
 
         for(option in optionsList){
@@ -62,8 +64,11 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
 
         var ll_main_layout= findViewById<LinearLayout>(R.id.ll_main_layout)
 
+        //remove unwanted views
+        removeUnwantedViews(question)
+
         //assign options
-        if(mCurrentPosition>1){
+        if(mCurrentPosition>1){ //checking whether option text views have already been created
             for(i in 1..question.options.size){
                 var tv_dynamic= findViewById<TextView>(i)
                 tv_dynamic.text= question.options[i-1].text
@@ -71,7 +76,7 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
             }
         } else{
             for(i in 1..question.options.size){
-                ll_main_layout.addView(createOptionTextView(question.options[i-1].text))
+                ll_main_layout.addView(createOptionTextView(question.options[i-1].text, question.options.size))
             }
             ll_main_layout.addView(createSubmitButton())
         }
@@ -88,13 +93,30 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
         }
     }
 
-    fun createOptionTextView(text:String):TextView{
+    fun removeUnwantedViews(question:Question){
+        var maxOptionsNum=0
+        var ll_main_layout= findViewById<LinearLayout>(R.id.ll_main_layout)
+
+        for(question in mQuestionsList!!){
+            if(question.options.size>maxOptionsNum){
+                maxOptionsNum= question.options.size
+            }
+        }
+
+        var unwantedView:TextView
+        for(i in question.options.size+1..maxOptionsNum){
+            unwantedView= findViewById<TextView>(i)
+            ll_main_layout.removeView(unwantedView)
+        }
+    }
+
+    fun createOptionTextView(text: String, optionSize: Int):TextView{
         val tv_dynamic = TextView(this)
 
-        var generatedId=View.generateViewId()
-        generatedId= generatedId%4
+        var generatedId=generatedOptionID++
+        generatedId= generatedId%optionSize
         if(generatedId==0){
-            generatedId=4
+            generatedId=optionSize
         }
 
         tv_dynamic.setId(generatedId)
@@ -115,6 +137,10 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
 
         optionsList.add(tv_dynamic)
         return tv_dynamic
+    }
+
+    private fun resetOptionIds() {
+        generatedOptionID=1
     }
 
     fun createSubmitButton():Button{
@@ -147,7 +173,6 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
         btn_submit.text="SUBMIT"
         defaultOptionsView()
         mSelectedOptionPosition= selectedOptionNum
-        Log.i("mSelectedOptionPosition", "mSelectedOptionPosition="+ mSelectedOptionPosition)
 
         val textColor = ContextCompat.getColor(this, R.color.darkGrey)
         tv.setTextColor(textColor)
@@ -161,6 +186,7 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
                 if(mSelectedOptionPosition==0){
                     if(submittedStatus){
                         mCurrentPosition++
+                        resetOptionIds()
                         if(mCurrentPosition <= mQuestionsList!!.size){
                             setQuestion()
                         } else{

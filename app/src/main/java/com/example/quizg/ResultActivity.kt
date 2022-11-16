@@ -26,7 +26,6 @@ class ResultActivity : AppCompatActivity() {
 
         val btn_finish= findViewById<Button>(R.id.btn_finish)
         btn_finish.setOnClickListener{
-            startActivity(Intent(this, StudentDashboard::class.java))
             finish()
         }
     }
