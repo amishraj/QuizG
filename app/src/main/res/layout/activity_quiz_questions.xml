@@ -16,6 +16,17 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:padding="10dp"
+            android:textColor="#7a7089"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            />
+
+        <TextView
             android:id="@+id/tv_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
