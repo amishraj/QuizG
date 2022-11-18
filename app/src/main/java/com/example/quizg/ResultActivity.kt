@@ -20,9 +20,13 @@ class ResultActivity : AppCompatActivity() {
 
         val totalQuestions= intent.getIntExtra(Constants.TOTAL_QUESTIONS,0)
         val correctAnswers= intent.getIntExtra(Constants.CORRECT_ANSWERS,0)
+        val attemptTime= intent.getStringExtra("timescore")
 
         val tv_score= findViewById<TextView>(R.id.tv_score)
         tv_score.text = "Your score is $correctAnswers out of $totalQuestions"
+
+        val tv_timeScore= findViewById<TextView>(R.id.tv_timeScore)
+        tv_timeScore.text= "Time Elapsed: $attemptTime"
 
         val btn_finish= findViewById<Button>(R.id.btn_finish)
         btn_finish.setOnClickListener{

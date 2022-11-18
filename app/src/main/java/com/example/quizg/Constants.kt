@@ -2,6 +2,8 @@ package com.example.quizg
 
 import android.util.Log
 import android.widget.Toast
+import java.util.*
+import kotlin.collections.ArrayList
 
 object Constants{
 
@@ -13,9 +15,13 @@ object Constants{
 
     private val listOfQuizzes:ArrayList<Quiz>?= arrayListOf()
 
-    fun getQuestions(quizTitle :String): ArrayList<Question>? { //TODO: Should take parameters quiz and returns questionsList
+    fun getQuestions(quizTitle :String): ArrayList<Question>? {
         for(quiz in listOfQuizzes!!){
             if(quiz.title== quizTitle){
+                //shuffle the options for each question in the quiz
+                for(question in quiz.questions){
+                    Collections.shuffle(question.options)
+                }
                 return quiz.questions
             }
         }
@@ -79,6 +85,10 @@ object Constants{
         val quiz2= Quiz(2, "Kotlin and its Benefits", questionsList2, "CSCI6221", "Advanced Software Paradigms", 3)
         val quiz3= Quiz(3, "Scrum and Agile", questionsList1, "CSCI6221", "Advanced Software Paradigms", 3)
         val quiz4= Quiz(4, "Cache Registers", questionsList2, "CSCI6461", "Computer Architectures", 3)
+        val quiz5= Quiz(5, "Scrum and Agile3", questionsList1, "CSCI6221", "Advanced Software Paradigms", 3)
+        val quiz6= Quiz(6, "Scrum and Agile1", questionsList1, "CSCI6221", "Advanced Software Paradigms", 3)
+        val quiz7= Quiz(7, "Scrum and Agile2", questionsList1, "CSCI6221", "Advanced Software Paradigms", 3)
+
 
         listOfQuizzes?.add(quiz1); listOfQuizzes?.add(quiz2); listOfQuizzes?.add(quiz3); listOfQuizzes?.add(quiz4)
 

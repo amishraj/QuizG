@@ -1,7 +1,10 @@
 package com.example.quizg
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +16,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import org.w3c.dom.Text
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
 
@@ -27,10 +33,19 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
 
     private var generatedOptionID:Int=1
 
+    private var timerStarted=false
+    private lateinit var serviceIntent: Intent
+    private var time= 0.0
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
+
+        //timer
+        serviceIntent = Intent(applicationContext, TimerService::class.java)
+        registerReceiver(updateTime, IntentFilter(TimerService.TIMER_UPDATED))
+        startStopTimer()
 
         mUsername= intent.getStringExtra(Constants.USER_NAME)
         var currentQuizTitle= intent.getStringExtra(Constants.CURRENT_QUIZ_TITLE)
@@ -194,6 +209,8 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
                             intent.putExtra(Constants.USER_NAME, mUsername)
                             intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
                             intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList!!.size)
+                            intent.putExtra("timescore", getTimeStringFromDouble(time))
+                            resetTimer()
                             startActivity(intent)
                             finish()
                         }
@@ -233,4 +250,48 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
             }
         }
     }
+
+    private fun startStopTimer(){
+        if(timerStarted)
+            stopTimer()
+        else
+            startTimer()
+    }
+
+    private fun startTimer() {
+        serviceIntent.putExtra(TimerService.TIME_EXTRA, time)
+        startService(serviceIntent)
+        timerStarted=true
+    }
+
+    private fun stopTimer() {
+        stopService(serviceIntent)
+        timerStarted=false
+    }
+
+    private fun resetTimer(){
+        stopTimer()
+        time= 0.0
+        var tv_time= findViewById<TextView>(R.id.tv_time)
+        tv_time.text= getTimeStringFromDouble(time)
+    }
+
+    private val updateTime: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            time = intent!!.getDoubleExtra(TimerService.TIME_EXTRA, 0.0)
+            var tv_time= findViewById<TextView>(R.id.tv_time)
+            tv_time.text= getTimeStringFromDouble(time)
+        }
+    }
+
+    private fun getTimeStringFromDouble(time: Double): String {
+        val resultInt= time.roundToInt()
+        val hours= resultInt % 86400 / 3600
+        val minutes= resultInt % 86400 % 3600 /60
+        val seconds= resultInt % 86400 % 3600 % 60
+
+        return makeTimeString(hours, minutes, seconds)
+    }
+
+    private fun makeTimeString(hour: Int, min: Int, sec: Int): String= String.format("%02d:%02d:%02d", hour, min, sec)
 }
