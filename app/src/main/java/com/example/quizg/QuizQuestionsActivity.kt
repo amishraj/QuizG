@@ -45,6 +45,7 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
         //timer
         serviceIntent = Intent(applicationContext, TimerService::class.java)
         registerReceiver(updateTime, IntentFilter(TimerService.TIMER_UPDATED))
+        resetTimer()
         startStopTimer()
 
         mUsername= intent.getStringExtra(Constants.USER_NAME)
