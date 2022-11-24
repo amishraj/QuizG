@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             else{
                 userType="Professor"
                 //TODO : Below intent should go to Professor/Admin Dashboard
-                intent  = Intent(this, QuizQuestionsActivity::class.java)
+                intent  = Intent(this, ProfessorDashboard::class.java)
             }
             intent.putExtra(Constants.USER_NAME, username)
 
