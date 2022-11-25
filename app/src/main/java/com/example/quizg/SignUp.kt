@@ -75,16 +75,30 @@ class SignUp : AppCompatActivity() {
             else{
                 userType="Professor"
             }
-            val User = Users(firstname,lastname,username,password)
             database = FirebaseDatabase.getInstance().getReference("Users")
-            database.child(userType).child(username).setValue(User).addOnSuccessListener {
-                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }.addOnFailureListener{
-                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
-            }
+            database.child(userType).child(username).get()
+                .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
+                    if (task.isSuccessful) {
+                        if (task.result.exists()) {
+                            Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            val User = Users(firstname,lastname,username,password)
+                            database.child(userType).child(username).setValue(User).addOnSuccessListener {
+                                Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }.addOnFailureListener{
+                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                    else{
+                        Toast.makeText(this, "Error encountered", Toast.LENGTH_SHORT).show();
+                    }
+                })
+
         }
     }
 }

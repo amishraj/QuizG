@@ -38,11 +38,12 @@ class ProfessorDashboard : AppCompatActivity() {
         //default course selection
         courseSelection = arrayAdapterCourse.getItem(0).toString()
 
-        var btn_goToQuizCreation = findViewById<Button>(R.id.create_quiz)
+        val btn_goToQuizCreation = findViewById<Button>(R.id.create_quiz)
         btn_goToQuizCreation.setOnClickListener {
-            val intent = Intent(this, QuizQuestionsActivity::class.java)
+            val intent = Intent(this, CreateQuiz::class.java)
             intent.putExtra(Constants.USER_NAME, mUsername)
             intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
+            Toast.makeText(this, "Setting new quiz", Toast.LENGTH_SHORT).show();
             startActivity(intent)
         }
     }
