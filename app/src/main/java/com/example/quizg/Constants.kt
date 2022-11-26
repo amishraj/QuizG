@@ -4,6 +4,11 @@ import android.util.Log
 import android.widget.Toast
 import java.util.*
 import kotlin.collections.ArrayList
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+const val algorithm = "AES/CBC/PKCS5Padding"
+val key = SecretKeySpec("1234567890123456".toByteArray(), "AES")
+val iv = IvParameterSpec(ByteArray(16))
 
 object Constants{
 

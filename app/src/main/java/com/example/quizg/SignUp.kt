@@ -12,6 +12,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 
 class SignUp : AppCompatActivity() {
@@ -69,6 +71,11 @@ class SignUp : AppCompatActivity() {
             val firstname = firstname.text.toString()
             val lastname = lastname.text.toString()
             val userType : String
+            var Aes = AESEncDec()
+            val inputText = password
+            val EncryptedPassword = Aes.encrypt(algorithm, inputText, key, iv)
+            print("Cipher Text: $EncryptedPassword")
+            print("\n")
             if(radioButton.text=="Student"){
                 userType="Student"
             }
@@ -83,7 +90,7 @@ class SignUp : AppCompatActivity() {
                             Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            val User = Users(firstname,lastname,username,password)
+                            val User = Users(firstname,lastname,username,EncryptedPassword)
                             database.child(userType).child(username).setValue(User).addOnSuccessListener {
                                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
                                 val intent = Intent(this, MainActivity::class.java)

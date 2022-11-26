@@ -82,7 +82,9 @@ class MainActivity : AppCompatActivity() {
                         if (task.result.exists()) {
                             val dataSnapshot = task.result
                             val passwordval = dataSnapshot.child("password").value.toString()
-                            if(password==passwordval){
+                            var Aes1 = AESEncDec()
+                            var DecryptedPassword = Aes1.decrypt(algorithm, passwordval, key, iv)
+                            if(password==DecryptedPassword){
                                 Toast.makeText(this, "User Logging in", Toast.LENGTH_SHORT)
                                     .show()
                                 startActivity(intent)
