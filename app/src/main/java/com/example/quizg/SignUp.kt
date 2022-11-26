@@ -1,5 +1,6 @@
 package com.example.quizg
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,9 +10,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
@@ -20,7 +19,10 @@ class SignUp : AppCompatActivity() {
     private lateinit var database : DatabaseReference
     lateinit var radioGroup: RadioGroup
     lateinit var radioButton: RadioButton
+    private var UniversitySelected:String?=null
+    private lateinit var selUni: AutoCompleteTextView
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sign_up)
@@ -40,8 +42,36 @@ class SignUp : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        var Universities= mutableListOf<String>()
+        selUni= findViewById(R.id.selectUniversity);
+        database = FirebaseDatabase.getInstance().getReference("Universities");
+        database?.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot){
+                for(ds in snapshot.children){
+                    val uniName = ds.child("University").value.toString()
+                    Universities.add(uniName)
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        var arrayAdapterCourse = ArrayAdapter(this, R.layout.option_item, Universities)
+        selUni.setAdapter(arrayAdapterCourse)
+
+        selUni.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, rowId ->
+            UniversitySelected = parent.getItemAtPosition(position) as String
+        })
+
         val btn_start:Button= findViewById(R.id.btn_start);
         btn_start.setOnClickListener{StartClick()};
+
+        val btn_back:Button= findViewById(R.id.btn_back);
+        btn_back.setOnClickListener{
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        };
     }
 
     private fun StartClick(){
@@ -64,7 +94,8 @@ class SignUp : AppCompatActivity() {
         else if(radioGroup.getCheckedRadioButtonId() == -1){
             Toast.makeText(this, "Please select user type", Toast.LENGTH_SHORT).show();
         }
-        else{
+        else
+        {
             val intent  = Intent(this, QuizQuestionsActivity::class.java)
             val username = username.text.toString()
             val password = password.text.toString()
@@ -90,7 +121,7 @@ class SignUp : AppCompatActivity() {
                             Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            val User = Users(firstname,lastname,username,EncryptedPassword)
+                            val User = Users(UniversitySelected,firstname,lastname,username,EncryptedPassword)
                             database.child(userType).child(username).setValue(User).addOnSuccessListener {
                                 Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
                                 val intent = Intent(this, MainActivity::class.java)

@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(Constants.USER_NAME, username)
 
             reference = FirebaseDatabase.getInstance().getReference("Users")
-            //val User = Users(username)
             reference.child(userType).child(username).get()
                 .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
                     if (task.isSuccessful) {
@@ -85,6 +84,8 @@ class MainActivity : AppCompatActivity() {
                             var Aes1 = AESEncDec()
                             var DecryptedPassword = Aes1.decrypt(algorithm, passwordval, key, iv)
                             if(password==DecryptedPassword){
+                                val university = dataSnapshot.child("university").value.toString()
+                                intent.putExtra(Constants.UNIVERSITY, university)
                                 Toast.makeText(this, "User Logging in", Toast.LENGTH_SHORT)
                                     .show()
                                 startActivity(intent)

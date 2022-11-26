@@ -13,6 +13,8 @@ val iv = IvParameterSpec(ByteArray(16))
 object Constants{
 
     const val USER_NAME:String="user_name"
+    const val UNIVERSITY:String="university"
+    const val COURSE:String="course"
     const val TOTAL_QUESTIONS:String="total_question"
     const val CORRECT_ANSWERS:String= "correct_answers"
     const val NAME_OF_USER:String="name_of_user"

@@ -15,16 +15,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center">
-        <TextView
-            android:id="@+id/tv_app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:layout_marginBottom="30dp"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:text="Quiz G"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -60,6 +50,23 @@
                     android:textSize="16sp"
                     android:textColor="#7a8089"
                     />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:startIconDrawable="@drawable/coursecode"
+                    android:hint="Select University"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/selectUniversity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColor="#000"
+                        android:enabled="false"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/filledTextFieldfirstname"
@@ -162,6 +169,18 @@
                     android:background="@color/purple_500"
                     android:textColor="@android:color/white"
                     android:text="SIGN UP"
+                    />
+
+                <Button
+                    android:id="@+id/btn_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@color/purple_500"
+                    android:textColor="@android:color/white"
+                    android:text="BACK"
                     />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
