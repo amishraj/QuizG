@@ -59,30 +59,25 @@ class ProfessorDashboard : AppCompatActivity() {
         })
 
         val quizname: TextInputEditText= findViewById(R.id.QuizName);
-        quizSelection = quizname.text.toString()
 
         val btn_goToQuizCreation = findViewById<Button>(R.id.create_quiz)
         btn_goToQuizCreation.setOnClickListener {
+            quizSelection = quizname.text.toString()
+            Toast.makeText(this,"quizSelection"+ quizSelection, Toast.LENGTH_SHORT).show();
             val intent = Intent(this, CreateQuiz::class.java)
             intent.putExtra(Constants.USER_NAME, mUsername)
             intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
             intent.putExtra(Constants.UNIVERSITY, mUniversity)
             intent.putExtra(Constants.COURSE, courseSelected)
-            Toast.makeText(this, "Setting new quiz", Toast.LENGTH_SHORT).show();
             database = FirebaseDatabase.getInstance().getReference("Quiz")
             database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).get()
                 .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
                     if (task.isSuccessful) {
                         if (task.result.exists()) {  //if <University>/<Course>/<Username> exists
-                            database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(quizSelection).addOnSuccessListener {
-                                Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
-                                database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).setValue(quizSelection).addOnSuccessListener {
-                                    Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
-                                    startActivity(intent)
-                                    finish()
-                                }.addOnFailureListener{
-                                    Toast.makeText(this, "Failed to save quiz", Toast.LENGTH_SHORT).show();
-                                }
+                            database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).setValue(quizSelection).addOnSuccessListener {
+                            Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
+                            startActivity(intent)
+                            finish()
                             }.addOnFailureListener{
                                 Toast.makeText(this, "Failed to save quiz", Toast.LENGTH_SHORT).show();
                             }
@@ -103,20 +98,22 @@ class ProfessorDashboard : AppCompatActivity() {
                                                                     if (task.isSuccessful) {
                                                                         if (task.result.exists())
                                                                         { //if <University>/<Course>/<Username>  exists
-                                                                            database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(quizSelection).addOnSuccessListener {
-                                                                                Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
-                                                                                startActivity(intent)
-                                                                                finish()
+                                                                            database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).setValue(quizSelection).addOnSuccessListener {
+                                                                            Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
+                                                                            startActivity(intent)
+                                                                            finish()
                                                                             }.addOnFailureListener{
                                                                                 Toast.makeText(this, "Failed to save quiz", Toast.LENGTH_SHORT).show();
                                                                             }
                                                                         }
                                                                         else
                                                                         { //if <University>/<Course>/<Username> does not exists
-                                                                            database.child(mUniversity.toString()).child(courseSelected.toString()).setValue(mUsername).addOnSuccessListener {
+                                                                            database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(mUsername).addOnSuccessListener {
                                                                                 Toast.makeText(this, "Saved Username", Toast.LENGTH_SHORT).show();
                                                                                 database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(quizSelection).addOnSuccessListener {
                                                                                     Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
+                                                                                    startActivity(intent)
+                                                                                    finish()
                                                                                 }.addOnFailureListener{
                                                                                     Toast.makeText(this, "Failed to save Quiz", Toast.LENGTH_SHORT).show();
                                                                                 }
@@ -129,12 +126,14 @@ class ProfessorDashboard : AppCompatActivity() {
                                                         }
                                                         else
                                                         { //if <University>/<Course> does not exists
-                                                            database.child(mUniversity.toString()).setValue(courseSelected).addOnSuccessListener {
+                                                            database.child(mUniversity.toString()).child(courseSelected.toString()).setValue(courseSelected).addOnSuccessListener {
                                                                 Toast.makeText(this, "Saved Course", Toast.LENGTH_SHORT).show();
-                                                                database.child(mUniversity.toString()).child(courseSelected.toString()).setValue(mUsername).addOnSuccessListener {
+                                                                database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(mUsername).addOnSuccessListener {
                                                                     Toast.makeText(this, "Saved Username", Toast.LENGTH_SHORT).show();
-                                                                    database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(quizSelection).addOnSuccessListener {
+                                                                    database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).setValue(quizSelection).addOnSuccessListener {
                                                                         Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
+                                                                        startActivity(intent)
+                                                                        finish()
                                                                     }.addOnFailureListener{
                                                                         Toast.makeText(this, "Failed to save Quiz", Toast.LENGTH_SHORT).show();
                                                                     }
@@ -150,14 +149,16 @@ class ProfessorDashboard : AppCompatActivity() {
                                         }
                                         else
                                         { //if <University> does not exists
-                                            database.setValue(mUniversity).addOnSuccessListener {
+                                            database.child(mUniversity.toString()).setValue(mUniversity).addOnSuccessListener {
                                                 Toast.makeText(this, "Saved University", Toast.LENGTH_SHORT).show();
-                                                database.child(mUniversity.toString()).setValue(courseSelected).addOnSuccessListener {
+                                                database.child(mUniversity.toString()).child(courseSelected.toString()).setValue(courseSelected).addOnSuccessListener {
                                                     Toast.makeText(this, "Saved Course", Toast.LENGTH_SHORT).show();
-                                                    database.child(mUniversity.toString()).child(courseSelected.toString()).setValue(mUsername).addOnSuccessListener {
+                                                    database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(mUsername).addOnSuccessListener {
                                                         Toast.makeText(this, "Saved Username", Toast.LENGTH_SHORT).show();
-                                                        database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).setValue(quizSelection).addOnSuccessListener {
+                                                        database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).setValue(quizSelection).addOnSuccessListener {
                                                             Toast.makeText(this, "Saved Quiz", Toast.LENGTH_SHORT).show();
+                                                            startActivity(intent)
+                                                            finish()
                                                         }.addOnFailureListener{
                                                             Toast.makeText(this, "Failed to save Quiz", Toast.LENGTH_SHORT).show();
                                                         }
