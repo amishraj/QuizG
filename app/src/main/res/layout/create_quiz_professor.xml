@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".CreateQuizProfessor">
+    tools:context=".CreateQuiz">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,85 +42,101 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
+        <LinearLayout
+            android:layout_width="860px"
+            android:layout_height="292dp"
+            android:orientation="vertical">
 
-        <RadioGroup
-            android:id="@+id/radiogrp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="Enter Option A" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="Enter Option B" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:hint="Enter Option C" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="99dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="359dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:hint="Enter Option D" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/SelCorrect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/nextQuestionBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_question"
-            app:layout_constraintVertical_bias="0.095">
+            android:layout_margin="10dp"
+            android:gravity="left"
+            android:textColor="#363a43"
+            android:textSize="15sp"
+            android:text="Select correct Answer:"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/radioButton1"
-                android:layout_width="match_parent"
+                android:layout_width="33px"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/default_option_border_bg"
-                android:drawableEnd="@drawable/default_option_border_bg"
-                android:padding="16dp"
-                android:text="Option 1"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                android:layout_weight="1"
+                android:text="A" />
 
             <RadioButton
                 android:id="@+id/radioButton2"
-                android:layout_width="match_parent"
+                android:layout_width="33px"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/default_option_border_bg"
-                android:drawableEnd="@drawable/default_option_border_bg"
-                android:padding="16dp"
-                android:text="Option 2"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radioButton1" />
+                android:layout_weight="1"
+                android:text="B" />
 
             <RadioButton
                 android:id="@+id/radioButton3"
-                android:layout_width="match_parent"
+                android:layout_width="33px"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/default_option_border_bg"
-                android:drawableEnd="@drawable/default_option_border_bg"
-                android:padding="16dp"
-                android:text="Option 3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radioButton2" />
+                android:layout_weight="1"
+                android:text="C" />
 
             <RadioButton
                 android:id="@+id/radioButton4"
-                android:layout_width="match_parent"
+                android:layout_width="33px"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/default_option_border_bg"
-                android:drawableEnd="@drawable/default_option_border_bg"
-                android:padding="16dp"
-                android:text="Option 4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radioButton3" />
-        </RadioGroup>
+                android:layout_weight="1"
+                android:text="D" />
+        </LinearLayout>
+
         <Button
             android:id="@+id/nextQuestionBtn"
             android:layout_width="250dp"
@@ -138,12 +154,12 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/save_and_exit"
+            android:id="@+id/publish"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:background="@drawable/default_option_border_bg"
             android:padding="16dp"
-            android:text="Save and Exit"
+            android:text="PUBLISH TEST"
             android:textColor="#ffff"
             android:textSize="16sp"
             android:textStyle="bold"
