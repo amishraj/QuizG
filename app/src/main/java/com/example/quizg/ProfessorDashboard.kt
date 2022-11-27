@@ -69,6 +69,7 @@ class ProfessorDashboard : AppCompatActivity() {
             intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
             intent.putExtra(Constants.UNIVERSITY, mUniversity)
             intent.putExtra(Constants.COURSE, courseSelected)
+            intent.putExtra(Constants.QNo, "1")
             database = FirebaseDatabase.getInstance().getReference("Quiz")
             database.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).get()
                 .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->

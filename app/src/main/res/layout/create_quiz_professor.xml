@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/option_A"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -62,6 +63,7 @@
                     android:layout_height="match_parent">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/option_B"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -72,6 +74,7 @@
                         android:layout_height="match_parent">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/option_C"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -82,6 +85,7 @@
                             android:layout_height="99dp">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/option_D"
                                 android:layout_width="359dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
@@ -107,34 +111,41 @@
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:orientation="horizontal">
+            <RadioGroup
+                android:id="@+id/groupradio"
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="74dp"
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioButton1"
-                android:layout_width="33px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="A" />
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="33px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="A" />
 
-            <RadioButton
-                android:id="@+id/radioButton2"
-                android:layout_width="33px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="B" />
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="33px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="B" />
 
-            <RadioButton
-                android:id="@+id/radioButton3"
-                android:layout_width="33px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="C" />
+                <RadioButton
+                    android:id="@+id/radioButton3"
+                    android:layout_width="33px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="C" />
 
-            <RadioButton
-                android:id="@+id/radioButton4"
-                android:layout_width="33px"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="D" />
+                <RadioButton
+                    android:id="@+id/radioButton4"
+                    android:layout_width="33px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="D" />
+            </RadioGroup>
         </LinearLayout>
 
         <Button
