@@ -1,7 +1,8 @@
 package com.example.quizg
 
-import android.util.Log
 import android.widget.Toast
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
 import javax.crypto.spec.IvParameterSpec
@@ -9,6 +10,8 @@ import javax.crypto.spec.SecretKeySpec
 const val algorithm = "AES/CBC/PKCS5Padding"
 val key = SecretKeySpec("1234567890123456".toByteArray(), "AES")
 val iv = IvParameterSpec(ByteArray(16))
+private lateinit var reference : DatabaseReference
+private lateinit var referencetemp : DatabaseReference
 
 object Constants{
 
@@ -19,6 +22,7 @@ object Constants{
     const val TOTAL_QUESTIONS:String="total_question"
     const val CORRECT_ANSWERS:String= "correct_answers"
     const val NAME_OF_USER:String="name_of_user"
+    const val PROF_NAME:String="professor_name"
     const val CURRENT_QUIZ_TITLE:String="current_quiz_title"
 
     private val listOfQuizzes:ArrayList<Quiz>?= arrayListOf()
@@ -113,8 +117,8 @@ object Constants{
 
     }
 
-    fun getAllCourses(): Array<String> {
-        var courseList= arrayOf<String>()
+    fun getAllCourses(mUniversity: String?): MutableList<String> {
+        /*var courseList= arrayOf<String>()
         var quizList= getQuizzes("Design and Analysis of Algorithms")
 
         if (listOfQuizzes != null) {
@@ -125,6 +129,63 @@ object Constants{
             }
             return courseList
         }
-        return courseList
+        return courseList*/
+        var Courses= mutableListOf<String>()
+        reference = FirebaseDatabase.getInstance().getReference("Universities");
+        reference?.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot){
+                for(ds in snapshot.child(mUniversity.toString()).child("Courses").children){
+                    val courseName = ds.key.toString()
+                    Courses.add(courseName.toString())
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        return Courses
+    }
+
+    fun getAllProfessors(mUniversity: String?,courseSelection: String?): MutableList<String> {
+        /*var courseList= arrayOf<String>()
+        var quizList= getQuizzes("Design and Analysis of Algorithms")
+
+        if (listOfQuizzes != null) {
+            for(quiz in listOfQuizzes){
+                if(!courseList.contains(quiz.courseName)){
+                    courseList+= quiz.courseName
+                }
+            }
+            return courseList
+        }
+        return courseList*/
+        var profs_usernames= mutableListOf<String>()
+        var profs_names= mutableListOf<String>()
+        reference = FirebaseDatabase.getInstance().getReference("Quiz");
+        reference?.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot){
+                for(ds in snapshot.child(mUniversity.toString()).child(courseSelection.toString()).children){
+                    val prof_userName = ds.key.toString()
+                    profs_usernames.add(prof_userName.toString())
+                    referencetemp = FirebaseDatabase.getInstance().getReference("Users");
+                    referencetemp.child("Professor").child(prof_userName).get()
+                        .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
+                            if (task.isSuccessful) {
+                                if (task.result.exists()) {
+                                    val dataSnapshot = task.result
+                                    val firstname = dataSnapshot.child("firstname").value.toString()
+                                    val lastname = dataSnapshot.child("lastname").value.toString()
+                                    val name=firstname+" "+lastname
+                                    profs_names.add(name)
+                                }
+                            }
+                        })
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+        return profs_names
     }
 }
