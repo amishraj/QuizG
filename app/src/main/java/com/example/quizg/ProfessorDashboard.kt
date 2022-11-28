@@ -1,13 +1,20 @@
 package com.example.quizg
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.widget.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.*
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.File
+import java.io.FileOutputStream
 
 class ProfessorDashboard : AppCompatActivity() {
 
@@ -15,14 +22,19 @@ class ProfessorDashboard : AppCompatActivity() {
     private lateinit var autoCompleteTextViewQuiz: AutoCompleteTextView
     private lateinit var database : DatabaseReference
     private lateinit var reference : DatabaseReference
+    private lateinit var referencetemp : DatabaseReference
     private var courseSelected:String?=null
     private lateinit var selCourse: AutoCompleteTextView
 
     private var mUsername:String?= null
     private var mUniversity:String?= null
     private var quizSelection:String?=null
+    private var quizSelected:String?=null
+    private var quizNull:Boolean = true
+    private val STORAGE_PERMISSION_CODE:Int =1000;
 
     private var quizList:ArrayList<Quiz>?=null
+    private var Results = mutableListOf<Result>()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +51,7 @@ class ProfessorDashboard : AppCompatActivity() {
         //set Course dropdown
         autoCompleteTextViewCourse = findViewById(R.id.autoCompleteTextCourse)
         var Courses= mutableListOf<String>()
+        var Quizzes= mutableListOf<String>()
         reference = FirebaseDatabase.getInstance().getReference("Universities");
         reference?.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot){
@@ -56,9 +69,81 @@ class ProfessorDashboard : AppCompatActivity() {
 
         autoCompleteTextViewCourse.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, rowId ->
             courseSelected = parent.getItemAtPosition(position) as String
+            reference = FirebaseDatabase.getInstance().getReference("Quiz");
+            reference?.addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot){
+                    Quizzes?.clear()
+                    quizNull = true
+                    for(ds in snapshot.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).children){
+                        val quiz = ds.key.toString()
+                        val published = ds.child("Published").exists()
+                        if(published==true) {
+                            quizNull = false
+                            Quizzes.add(quiz.toString())
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        })
+
+        //set Quiz dropdown
+        autoCompleteTextViewQuiz = findViewById(R.id.autoCompleteTextPastQuiz)
+        var arrayAdapterQuiz = ArrayAdapter(this, R.layout.option_item, Quizzes)
+        autoCompleteTextViewQuiz.setAdapter(arrayAdapterQuiz)
+
+        autoCompleteTextViewQuiz.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, rowId ->
+            quizSelected = parent.getItemAtPosition(position) as String
         })
 
         val quizname: TextInputEditText= findViewById(R.id.QuizName);
+
+        //Download Result button
+        var btn_downloadResult= findViewById<Button>(R.id.get_result)
+        btn_downloadResult.setOnClickListener{
+            if(quizNull){
+                Toast.makeText(this,"No quiz selected", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this,"Downloading Result..", Toast.LENGTH_SHORT).show();
+
+
+                reference = FirebaseDatabase.getInstance().getReference("Result");
+                Results.clear()
+                reference?.addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (ds in snapshot.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).children) {
+                            val student_username = ds.key.toString()
+                            val quizCompleted = ds.child(quizSelected.toString()).exists()
+                            if (quizCompleted == true) {
+                                var result = Result(ds.child(quizSelected.toString()).child("name").value as String?,ds.child(quizSelected.toString()).child("score").value as String?, ds.child(quizSelected.toString()).child("time").value as String?)
+                                Results.add(result)
+                            }
+                        }
+
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_DENIED){
+                                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+                            }
+                            else{
+                                startDownloading();
+                            }
+                        }
+                        else{
+                            startDownloading();
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+
+
+            }
+        }
 
         //logout button
         var btn_logout= findViewById<Button>(R.id.btn_logout)
@@ -190,4 +275,63 @@ class ProfessorDashboard : AppCompatActivity() {
                 })
         }
     }
-}
+
+    private fun startDownloading() {
+        val COLUMNs = arrayOf<String>("Id","Name","Score","Time Taken")
+        val workbook = XSSFWorkbook()
+        val sheet = workbook.createSheet(quizSelected.toString())
+        val headerFont = workbook.createFont()
+        headerFont.setBold(true)
+
+        val headerCellStyle = workbook.createCellStyle()
+        headerCellStyle.setFont(headerFont)
+
+        val headerRow = sheet.createRow(0)
+
+        for(col in COLUMNs.indices)
+        {
+            val cell = headerRow.createCell(col)
+            cell.setCellValue(COLUMNs[col])
+            cell.setCellStyle(headerCellStyle)
+        }
+
+        var rowIdx = 1
+        for(result in Results)
+        {
+            val row = sheet.createRow(rowIdx++)
+            var id = (rowIdx - 1)
+            row.createCell(0).setCellValue(id.toString())
+            row.createCell(1).setCellValue(result.name)
+            row.createCell(2).setCellValue(result.score)
+            row.createCell(2).setCellValue(result.time)
+
+        }
+        var myFile = File("Result.xlsx")
+        try{
+            var fileOut = FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath()+"Result.xlsx")
+            workbook.write(fileOut)
+            fileOut.flush()
+            fileOut.close()
+        }
+        catch (e: java.io.FileNotFoundException){
+            Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode)
+            {
+                STORAGE_PERMISSION_CODE ->
+                {
+                    if(grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                        startDownloading()
+                    }
+                    else{
+                        Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+    }

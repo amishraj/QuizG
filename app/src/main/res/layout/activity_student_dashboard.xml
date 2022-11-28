@@ -112,7 +112,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:background="#669933"
+            android:backgroundTint="@color/green"
             android:textColor="@android:color/white"
             android:text="LOGOUT"
             />
