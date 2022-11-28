@@ -60,6 +60,13 @@ class ProfessorDashboard : AppCompatActivity() {
 
         val quizname: TextInputEditText= findViewById(R.id.QuizName);
 
+        //logout button
+        var btn_logout= findViewById<Button>(R.id.btn_logout)
+        btn_logout.setOnClickListener{
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         val btn_goToQuizCreation = findViewById<Button>(R.id.create_quiz)
         btn_goToQuizCreation.setOnClickListener {
             quizSelection = quizname.text.toString()

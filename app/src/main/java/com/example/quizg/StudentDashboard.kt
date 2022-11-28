@@ -97,6 +97,13 @@ class StudentDashboard : AppCompatActivity() {
             Constants.getQuizzes(mUniversity.toString(), courseSelection.toString(), mProfessor.toString(), quizSelection.toString(), mProfessorUN.toString())
             startActivity(intent)
         }
+
+        //logout button
+        var btn_logout= findViewById<Button>(R.id.btn_logout)
+        btn_logout.setOnClickListener{
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     /*private fun setQuizDropdown() {
