@@ -26,7 +26,9 @@ object Constants{
     const val CORRECT_ANSWERS:String= "correct_answers"
     const val NAME_OF_USER:String="name_of_user"
     const val PROF_NAME:String="professor_name"
+    const val PROF_UNAME:String="professor_username"
     const val CURRENT_QUIZ_TITLE:String="current_quiz_title"
+    const val TIME_TAKEN:String="00:00:00"
 
     private val listOfQuizzes:ArrayList<Quiz>?= arrayListOf()
 

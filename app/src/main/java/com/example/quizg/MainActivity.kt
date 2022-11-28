@@ -85,7 +85,10 @@ class MainActivity : AppCompatActivity() {
                             var DecryptedPassword = Aes1.decrypt(algorithm, passwordval, key, iv)
                             if(password==DecryptedPassword){
                                 val university = dataSnapshot.child("university").value.toString()
+                                val firstname = dataSnapshot.child("firstname").value.toString()
+                                val lastname = dataSnapshot.child("lastname").value.toString()
                                 intent.putExtra(Constants.UNIVERSITY, university)
+                                intent.putExtra(Constants.NAME_OF_USER, firstname.toString() + " " +lastname.toString())
                                 Toast.makeText(this, "User Logging in", Toast.LENGTH_SHORT)
                                     .show()
                                 startActivity(intent)

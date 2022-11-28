@@ -25,6 +25,7 @@ class StudentDashboard : AppCompatActivity() {
     private var quizSelection:String?=null
     private var mProfessor:String?=null
     private var mProfessorUN:String?=null
+    private var mName:String?=null
 
     private var quizList:ArrayList<Quiz>?=null
 
@@ -35,6 +36,7 @@ class StudentDashboard : AppCompatActivity() {
 
         //get student username from previous activity
         mUsername= intent.getStringExtra(Constants.USER_NAME)
+        mName =intent.getStringExtra(Constants.NAME_OF_USER)
         mUniversity = intent.getStringExtra(Constants.UNIVERSITY)
 
         //set welcome text
@@ -93,6 +95,8 @@ class StudentDashboard : AppCompatActivity() {
             intent.putExtra(Constants.UNIVERSITY, mUniversity)
             intent.putExtra(Constants.COURSE, courseSelection)
             intent.putExtra(Constants.PROF_NAME, mProfessor)
+            intent.putExtra(Constants.PROF_UNAME, mProfessorUN)
+            intent.putExtra(Constants.NAME_OF_USER, mName)
             intent.putExtra(Constants.QNo, "1")
             Constants.getQuizzes(mUniversity.toString(), courseSelection.toString(), mProfessor.toString(), quizSelection.toString(), mProfessorUN.toString())
             startActivity(intent)
