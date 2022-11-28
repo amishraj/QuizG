@@ -135,7 +135,10 @@ class StudentDashboard : AppCompatActivity() {
                                             override fun onDataChange(snapshot: DataSnapshot){
                                                 for(ds in snapshot.child(mUniversity.toString()).child(courseSelection.toString()).child(mProfessorUN.toString()).children){
                                                     val quiz = ds.key.toString()
-                                                    quizList.add(quiz.toString())
+                                                    val published = ds.child("Published").exists()
+                                                    if(published==true) {
+                                                        quizList.add(quiz.toString())
+                                                    }
                                                 }
                                             }
                                             override fun onCancelled(error: DatabaseError) {
