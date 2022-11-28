@@ -4,7 +4,7 @@ data class Quiz (
     val id:Int,
     val title:String,
     val questions: ArrayList<Question>,
-    val courseCode:String,
+    val ProfessorName:String,
     val courseName:String,
     val attempts:Int
     )

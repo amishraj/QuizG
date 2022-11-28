@@ -79,6 +79,11 @@ class StudentDashboard : AppCompatActivity() {
         ////quizList= Constants.getQuizzes(courseSelection!!)
         ////setQuizDropdown()
 
+        //quiz dropdown click listener
+        autoCompleteTextViewQuiz.setOnItemClickListener(OnItemClickListener { parent, view, position, rowId ->
+            quizSelection = parent.getItemAtPosition(position) as String
+        })
+
         //goto quiz button
         var btn_goToQuiz= findViewById<Button>(R.id.btn_goToQuiz)
         btn_goToQuiz.setOnClickListener{
@@ -89,6 +94,7 @@ class StudentDashboard : AppCompatActivity() {
             intent.putExtra(Constants.COURSE, courseSelection)
             intent.putExtra(Constants.PROF_NAME, mProfessor)
             intent.putExtra(Constants.QNo, "1")
+            Constants.getQuizzes(mUniversity.toString(), courseSelection.toString(), mProfessor.toString(), quizSelection.toString(), mProfessorUN.toString())
             startActivity(intent)
         }
     }

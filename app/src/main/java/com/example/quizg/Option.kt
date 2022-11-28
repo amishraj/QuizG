@@ -1,6 +1,6 @@
 package com.example.quizg
 
 data class Option(
-    val id:Int,
+    var id:Int,
     var text: String
 )

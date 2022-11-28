@@ -3,10 +3,13 @@ package com.example.quizg
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.*
+import java.lang.Double.parseDouble
 import java.util.*
 import kotlin.collections.ArrayList
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+import kotlin.collections.HashMap
+
 const val algorithm = "AES/CBC/PKCS5Padding"
 val key = SecretKeySpec("1234567890123456".toByteArray(), "AES")
 val iv = IvParameterSpec(ByteArray(16))
@@ -29,23 +32,91 @@ object Constants{
 
     fun getQuestions(quizTitle :String): ArrayList<Question>? {
         for(quiz in listOfQuizzes!!){
-            if(quiz.title== quizTitle){
-                //shuffle the options for each question in the quiz
-                for(question in quiz.questions){
-                    Collections.shuffle(question.options)
-                }
-                return quiz.questions
+            //shuffle the options for each question in the quiz
+            for(question in quiz.questions){
+                Collections.shuffle(question.options)
             }
+            return quiz.questions
         }
 
         return null
     }
 
-    fun getQuizzes(courseName:String): ArrayList<Quiz> {
+    fun getQuizzes(universityName:String, courseName:String, professorName:String, quizName:String, professorUserName:String) {
         //TODO: dummy data here, to be replaced by database fetched quizzes
         listOfQuizzes?.clear()
 
-        val questionsList1= ArrayList<Question>()
+        val questionsList= ArrayList<Question>()
+
+        reference = FirebaseDatabase.getInstance().getReference("Quiz");
+        reference?.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot){
+                for(ds in snapshot.child(universityName.toString()).child(courseName.toString()).child(professorUserName.toString()).child(quizName.toString()).children){
+                    val QNo = ds.key.toString()
+                    var numeric = true
+
+                    try {
+                        val num = Integer.parseInt(QNo)
+                    } catch (e: NumberFormatException) {
+                        numeric = false
+                    }
+
+                    if(numeric){
+                        val questionText = ds.child("question").value
+                        val options= ArrayList<Option>()
+                        val correctOption = Integer.parseInt(ds.child("correctAnswer").child("id").value.toString())
+                        var correctAnswer = Option(1,"")
+                        for(optionsVar in ds.child("options").children){
+                            var key = optionsVar.key
+                            var OptionId = Integer.parseInt(optionsVar.child("id").value.toString())
+                            var OptionText = optionsVar.child("text").value
+                            val option = Option(OptionId, OptionText.toString())
+                            options.add(option)
+                            if(correctOption==OptionId){
+                                correctAnswer.id = correctOption as Int
+                                correctAnswer.text = OptionText.toString()
+                            }
+                        }
+                        val question= Question(Integer.parseInt(QNo),
+                            questionText.toString(),options,correctAnswer)
+                        questionsList.add(question)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+/*
+        val options1= ArrayList<Option>()
+        val options2= ArrayList<Option>()
+        val options3= ArrayList<Option>()
+
+        val option1= Option(1, "New Delhi")
+        val option2= Option(2, "Jaipur")
+        val option3= Option(3,"Bangalore")
+        val option4= Option(4, "Kolkata")
+        options1.add(option1); options1.add(option2); options1.add(option3); options1.add(option4)
+
+        val option5= Option(5, "120")
+        val option6= Option(6, "360")
+        val option7= Option(7,"365")
+        val option8= Option(8, "365.25")
+        options2.add(option5); options2.add(option6); options2.add(option7); options2.add(option8)
+
+        val option9= Option(9, "Samsung")
+        val option10= Option(10, "Sony")
+        val option11= Option(11,"Nokia")
+        options3.add(option9); options3.add(option10); options3.add(option11)
+
+        val que1= Question(1, "What is the capital of India?", options1, option1)
+        val que2= Question(2, "How many days are there in a year?", options2, option8)
+        val que3= Question(3, "What company makes the Xperia model of smartphone?", options3, option10)
+        questionsList.add(que1);  questionsList.add(que2);  questionsList.add(que3)*/
+        val quiz= Quiz(1, quizName, questionsList, professorName, courseName, 3)
+        listOfQuizzes?.add(quiz);
+
+        /*val questionsList1= ArrayList<Question>()
         val questionsList2= ArrayList<Question>()
 
         val options1= ArrayList<Option>()
@@ -113,7 +184,7 @@ object Constants{
             }
         }
 
-        return tempQuizList
+        return tempQuizList*/
 
     }
 
