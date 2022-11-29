@@ -15,6 +15,7 @@ import com.google.firebase.database.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 class ProfessorDashboard : AppCompatActivity() {
 
@@ -316,18 +317,25 @@ class ProfessorDashboard : AppCompatActivity() {
             row.createCell(0).setCellValue(id.toString())
             row.createCell(1).setCellValue(result.name)
             row.createCell(2).setCellValue(result.score)
-            row.createCell(2).setCellValue(result.time)
+            row.createCell(3).setCellValue(result.time)
 
         }
-        var myFile = File("Result.xlsx")
-        try{
-            var fileOut = FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath()+"Result.xlsx")
-            workbook.write(fileOut)
-            fileOut.flush()
-            fileOut.close()
-        }
-        catch (e: java.io.FileNotFoundException){
-            Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show()
+        var fos: FileOutputStream? = null
+        fos.use {
+            try {
+                val str_path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                val file: File
+                file = File(str_path, "Result" + ".xlsx");
+                if (!file.getParentFile().exists())
+                    file.getParentFile().mkdirs();
+                if (!file.exists())
+                    file.createNewFile();
+                fos = FileOutputStream(file)
+                workbook.write(fos)
+                Toast.makeText(this, "Excel Sheet Generated:  ${file.path}", Toast.LENGTH_LONG).show()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 
