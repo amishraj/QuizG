@@ -30,7 +30,7 @@ object Constants{
     const val CURRENT_QUIZ_TITLE:String="current_quiz_title"
     const val TIME_TAKEN:String="00:00:00"
 
-    private val listOfQuizzes:ArrayList<Quiz>?= arrayListOf()
+    val listOfQuizzes:ArrayList<Quiz>?= arrayListOf()
 
     fun getQuestions(quizTitle :String): ArrayList<Question>? {
         for(quiz in listOfQuizzes!!){

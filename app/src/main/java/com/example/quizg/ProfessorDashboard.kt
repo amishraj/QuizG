@@ -156,7 +156,6 @@ class ProfessorDashboard : AppCompatActivity() {
         val btn_goToQuizCreation = findViewById<Button>(R.id.create_quiz)
         btn_goToQuizCreation.setOnClickListener {
             quizSelection = quizname.text.toString()
-            Toast.makeText(this,"quizSelection"+ quizSelection, Toast.LENGTH_SHORT).show();
             val intent = Intent(this, CreateQuiz::class.java)
             intent.putExtra(Constants.USER_NAME, mUsername)
             intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)

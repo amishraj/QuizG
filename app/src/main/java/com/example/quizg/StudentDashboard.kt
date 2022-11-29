@@ -89,17 +89,74 @@ class StudentDashboard : AppCompatActivity() {
         //goto quiz button
         var btn_goToQuiz= findViewById<Button>(R.id.btn_goToQuiz)
         btn_goToQuiz.setOnClickListener{
-            val intent = Intent(this, QuizQuestionsActivity::class.java)
-            intent.putExtra(Constants.USER_NAME, mUsername)
-            intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
-            intent.putExtra(Constants.UNIVERSITY, mUniversity)
-            intent.putExtra(Constants.COURSE, courseSelection)
-            intent.putExtra(Constants.PROF_NAME, mProfessor)
-            intent.putExtra(Constants.PROF_UNAME, mProfessorUN)
-            intent.putExtra(Constants.NAME_OF_USER, mName)
-            intent.putExtra(Constants.QNo, "1")
-            Constants.getQuizzes(mUniversity.toString(), courseSelection.toString(), mProfessor.toString(), quizSelection.toString(), mProfessorUN.toString())
-            startActivity(intent)
+            reference = FirebaseDatabase.getInstance().getReference("Result")
+            reference.child(mUniversity.toString()).child(courseSelection.toString()).child(mProfessorUN.toString()).child(mUsername.toString()).child(quizSelection.toString()).get()
+                .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
+                    if (task.isSuccessful) {
+                        Constants.getQuizzes(
+                            mUniversity.toString(),
+                            courseSelection.toString(),
+                            mProfessor.toString(),
+                            quizSelection.toString(),
+                            mProfessorUN.toString()
+                        )
+                        if (task.result.exists()) {
+                            val intent = Intent(this, ResultActivity::class.java)
+                            val dataSnapshot = task.result
+                            val correctanswers = dataSnapshot.child("score").value.toString()
+                            val timetaken = dataSnapshot.child("time").value.toString()
+                            intent.putExtra(Constants.USER_NAME, mUsername)
+                            intent.putExtra(Constants.CORRECT_ANSWERS, correctanswers)
+                            intent.putExtra(Constants.TIME_TAKEN, timetaken)
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, 10)
+                            intent.putExtra(Constants.UNIVERSITY, mUniversity)
+                            intent.putExtra(Constants.NAME_OF_USER, mName)
+                            startActivity(intent)
+                            finish()
+                        }
+                        else{
+                            val intent = Intent(this, QuizQuestionsActivity::class.java)
+                            intent.putExtra(Constants.USER_NAME, mUsername)
+                            intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
+                            intent.putExtra(Constants.UNIVERSITY, mUniversity)
+                            intent.putExtra(Constants.COURSE, courseSelection)
+                            intent.putExtra(Constants.PROF_NAME, mProfessor)
+                            intent.putExtra(Constants.PROF_UNAME, mProfessorUN)
+                            intent.putExtra(Constants.NAME_OF_USER, mName)
+                            intent.putExtra(Constants.QNo, "1")
+                            Constants.getQuizzes(
+                                mUniversity.toString(),
+                                courseSelection.toString(),
+                                mProfessor.toString(),
+                                quizSelection.toString(),
+                                mProfessorUN.toString()
+                            )
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                    else{
+                        val intent = Intent(this, QuizQuestionsActivity::class.java)
+                        intent.putExtra(Constants.USER_NAME, mUsername)
+                        intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
+                        intent.putExtra(Constants.UNIVERSITY, mUniversity)
+                        intent.putExtra(Constants.COURSE, courseSelection)
+                        intent.putExtra(Constants.PROF_NAME, mProfessor)
+                        intent.putExtra(Constants.PROF_UNAME, mProfessorUN)
+                        intent.putExtra(Constants.NAME_OF_USER, mName)
+                        intent.putExtra(Constants.QNo, "1")
+                        Constants.getQuizzes(
+                            mUniversity.toString(),
+                            courseSelection.toString(),
+                            mProfessor.toString(),
+                            quizSelection.toString(),
+                            mProfessorUN.toString()
+                        )
+                        startActivity(intent)
+                        finish()
+                    }
+                })
+
         }
 
         //logout button

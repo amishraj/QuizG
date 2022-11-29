@@ -18,9 +18,12 @@ class ResultActivity : AppCompatActivity() {
         val tv_name= findViewById<TextView>(R.id.tv_name)
         tv_name.text= username
 
-        val totalQuestions= intent.getIntExtra(Constants.TOTAL_QUESTIONS,0)
+        //val totalQuestions= intent.getIntExtra(Constants.TOTAL_QUESTIONS,0)
         val correctAnswers= intent.getIntExtra(Constants.CORRECT_ANSWERS,0)
         val attemptTime= intent.getStringExtra(Constants.TIME_TAKEN)
+        val totalQuestions = Constants.listOfQuizzes?.get(0)?.questions?.size
+        val university = intent.getStringExtra(Constants.UNIVERSITY)
+        val name = intent.getStringExtra(Constants.NAME_OF_USER)
 
         val tv_score= findViewById<TextView>(R.id.tv_score)
         tv_score.text = "Your score is $correctAnswers out of $totalQuestions"
@@ -30,6 +33,11 @@ class ResultActivity : AppCompatActivity() {
 
         val btn_finish= findViewById<Button>(R.id.btn_finish)
         btn_finish.setOnClickListener{
+            val intent = Intent(this, StudentDashboard::class.java)
+            intent.putExtra(Constants.USER_NAME, username)
+            intent.putExtra(Constants.UNIVERSITY, university)
+            intent.putExtra(Constants.NAME_OF_USER, name)
+            startActivity(intent)
             finish()
         }
     }

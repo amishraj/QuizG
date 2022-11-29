@@ -230,6 +230,7 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
                             intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
                             intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList!!.size)
                             intent.putExtra(Constants.TIME_TAKEN, getTimeStringFromDouble(time))
+                            intent.putExtra(Constants.UNIVERSITY, mUniversity)
                             val TimeVal = getTimeStringFromDouble(time)
                             resetTimer()
 
