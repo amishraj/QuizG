@@ -89,8 +89,21 @@ class StudentDashboard : AppCompatActivity() {
         //goto quiz button
         var btn_goToQuiz= findViewById<Button>(R.id.btn_goToQuiz)
         btn_goToQuiz.setOnClickListener{
-            reference = FirebaseDatabase.getInstance().getReference("Result")
-            reference.child(mUniversity.toString()).child(courseSelection.toString()).child(mProfessorUN.toString()).child(mUsername.toString()).child(quizSelection.toString()).get()
+            if(courseSelection==null){
+                Toast.makeText(this, "Course not selected", Toast.LENGTH_SHORT)
+                    .show();
+            }
+            else if(mProfessor==null){
+                Toast.makeText(this, "Professor not selected", Toast.LENGTH_SHORT)
+                    .show();
+            }
+            else if(quizSelection==null){
+                Toast.makeText(this, "Quiz not selected", Toast.LENGTH_SHORT)
+                    .show();
+            }
+            else{
+                reference = FirebaseDatabase.getInstance().getReference("Result")
+                reference.child(mUniversity.toString()).child(courseSelection.toString()).child(mProfessorUN.toString()).child(mUsername.toString()).child(quizSelection.toString()).get()
                 .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
                     if (task.isSuccessful) {
                         Constants.getQuizzes(
@@ -156,7 +169,7 @@ class StudentDashboard : AppCompatActivity() {
                         finish()
                     }
                 })
-
+            }
         }
 
         //logout button

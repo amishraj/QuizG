@@ -104,8 +104,11 @@ class ProfessorDashboard : AppCompatActivity() {
         //Download Result button
         var btn_downloadResult= findViewById<Button>(R.id.get_result)
         btn_downloadResult.setOnClickListener{
-            if(quizNull){
-                Toast.makeText(this,"No quiz selected", Toast.LENGTH_SHORT).show();
+            if(courseSelected == null){
+                Toast.makeText(this,"No Course selected", Toast.LENGTH_SHORT).show();
+            }
+            else if(quizNull || quizSelected == null){
+                Toast.makeText(this,"No Quiz selected", Toast.LENGTH_SHORT).show();
             }
             else {
                 Toast.makeText(this,"Downloading Result..", Toast.LENGTH_SHORT).show();
@@ -156,14 +159,20 @@ class ProfessorDashboard : AppCompatActivity() {
         val btn_goToQuizCreation = findViewById<Button>(R.id.create_quiz)
         btn_goToQuizCreation.setOnClickListener {
             quizSelection = quizname.text.toString()
-            val intent = Intent(this, CreateQuiz::class.java)
-            intent.putExtra(Constants.USER_NAME, mUsername)
-            intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
-            intent.putExtra(Constants.UNIVERSITY, mUniversity)
-            intent.putExtra(Constants.COURSE, courseSelected)
-            intent.putExtra(Constants.QNo, "1")
-            reference = FirebaseDatabase.getInstance().getReference("Quiz")
-            reference.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).get()
+            if(quizSelection=="" || quizSelection==null)
+            {
+                Toast.makeText(this, "Please provide Quiz Name!", Toast.LENGTH_SHORT)
+                    .show();
+            }
+            else{
+                val intent = Intent(this, CreateQuiz::class.java)
+                intent.putExtra(Constants.USER_NAME, mUsername)
+                intent.putExtra(Constants.CURRENT_QUIZ_TITLE, quizSelection)
+                intent.putExtra(Constants.UNIVERSITY, mUniversity)
+                intent.putExtra(Constants.COURSE, courseSelected)
+                intent.putExtra(Constants.QNo, "1")
+                reference = FirebaseDatabase.getInstance().getReference("Quiz")
+                reference.child(mUniversity.toString()).child(courseSelected.toString()).child(mUsername.toString()).child(quizSelection.toString()).get()
                 .addOnCompleteListener(OnCompleteListener<DataSnapshot?> { task ->
                     if (task.isSuccessful) {
                         if (task.result.exists()) {
@@ -285,7 +294,7 @@ class ProfessorDashboard : AppCompatActivity() {
                         }
                     }
                 })
-
+            }
         }
     }
 
